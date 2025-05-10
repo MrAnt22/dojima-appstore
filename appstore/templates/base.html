@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}App Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">🏠 Головна</a></li>
+                <li><a href="{% url 'search' %}">🔍 Пошук</a></li>
+                <li><a href="#">🧩 Категорії</a></li>
+                <li><a href="#">⭐ Рейтинги</a></li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}">👤 Мій профіль</a></li>
+                    <li><a href="#">💾 Завантаження</a></li>
+                    <li><a href="#">💬 Відгуки</a></li>
+                    <li><a href="#">⚙️ Налаштування</a></li>
+
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">🛠 Адмін-панель</a></li>
+                    {% endif %}
+
+                    <li><a href="#">🚪 Вийти</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">🔐 Увійти</a></li>
+                    <li><a href="{% url 'register' %}">📝 Зареєструватися</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

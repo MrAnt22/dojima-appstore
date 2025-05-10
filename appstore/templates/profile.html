@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Мій профіль{% endblock %}
+
+{% block content %}
+<h2>👤 Мій профіль</h2>
+
+<ul>
+    <li><strong>Ім'я користувача:</strong> {{ user.username }}</li>
+    <li><strong>Email:</strong> {{ user.email }}</li>
+    <li><strong>Дата приєднання:</strong> {{ user.date_joined|date:"d.m.Y" }}</li>
+</ul>
+
+<a href="{% url 'settings' %}">⚙️ Змінити налаштування</a>
+{% endblock %}
