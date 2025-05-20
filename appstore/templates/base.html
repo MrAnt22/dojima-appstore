@@ -1,41 +1,39 @@
-<!DOCTYPE html>
-<html lang="uk">
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}App Store{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <meta charset="UTF-8">
+  <title>{% block title %}App Store{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">🏠 Головна</a></li>
-                <li><a href="{% url 'search' %}">🔍 Пошук</a></li>
-                <li><a href="#">🧩 Категорії</a></li>
-                <li><a href="#">⭐ Рейтинги</a></li>
+  <!-- 🌐 Navbar -->
+  <header class="navbar elevation-2">
+    <div class="navbar-left">
+        <a href="{% url 'home' %}" class="logo"><img width="32px" height="32px" src="{% static 'img/store.png' %}"> Dojima Appstore</a>
+    </div>
+    
+    <button class="filter-button mobile-only" title="Filters">
+      <span class="material-symbols-rounded">tune</span>
+    </button>
 
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'profile' %}">👤 Мій профіль</a></li>
-                    <li><a href="#">💾 Завантаження</a></li>
-                    <li><a href="#">💬 Відгуки</a></li>
-                    <li><a href="#">⚙️ Налаштування</a></li>
+    <form action="{% url 'search' %}" method="get" class="search-bar">
+      <input type="text" name="q" placeholder="Search apps..." required>
+      <button type="submit">
+        <span class="material-symbols-rounded">search</span>
+      </button>
+    </form>
 
-                    {% if user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">🛠 Адмін-панель</a></li>
-                    {% endif %}
+    <a href="{% url 'profile' %}" class="profile-button">
+      <span class="material-symbols-rounded">account_circle</span>
+    </a>
+  </header>
 
-                    <li><a href="#">🚪 Вийти</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">🔐 Увійти</a></li>
-                    <li><a href="{% url 'register' %}">📝 Зареєструватися</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+  <!-- 🔄 Page content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
 </body>
 </html>

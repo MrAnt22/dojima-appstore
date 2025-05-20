@@ -1,8 +1,71 @@
-{% extends "base.html" %}
-
-{% block title %}Головна{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Home - App Store{% endblock %}
 
 {% block content %}
-<h1>Ласкаво просимо до App Store!</h1>
-<p>Завантажуйте, купуйте та оцінюйте улюблені додатки.</p>
+<div class="home-page">
+  <!-- sidebar of filtersr -->
+  <aside class="filters">
+    <h3>Filters</h3>
+    <form method="get">
+      <!-- filters -->
+      <label>
+        <input type="checkbox" name="category" value="tools">
+        Tools
+      </label><br>
+      <label>
+        <input type="checkbox" name="category" value="guides">
+        Guides
+      </label><br>
+      <label>
+        <input type="checkbox" name="category" value="announcements">
+        Announcements
+      </label><br>
+      <button type="submit">Apply</button>
+    </form>
+  </aside>
+
+  <!-- feed of apps -->
+  <section class="feed">
+    {% for post in posts %}
+    <div class="post-wrapper">
+      <!-- info of the admin who posted -->
+      <div class="admin-info">
+        <img src="{{ post.admin.avatar_url }}" alt="Avatar" class="avatar">
+        <span class="admin-name">{{ post.admin.username }}</span>
+      </div>
+
+      <!-- card (of the post)-->
+      <div class="post-card elevation-2">
+        <div class="post-header">
+          <h2 class="post-title">{{ post.title }}</h2>
+            <div class="rating">
+            {% for i in "12345"|make_list %}
+                {% if forloop.counter <= post.rating %}
+                <span class="star filled">★</span>
+                {% else %}
+                <span class="star">☆</span>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+
+        <p class="post-description">
+          {{ post.description|truncatewords:40 }}
+        </p>
+
+        <div class="post-footer">
+          <div class="post-stats">
+            👁️ {{ post.views }} &nbsp;
+            ❤️ {{ post.likes }} &nbsp;
+            💬 {{ post.comments }}
+          </div>
+          <div class="post-time">
+            🕒 {{ post.timestamp }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+</div>
 {% endblock %}

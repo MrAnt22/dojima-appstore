@@ -1,0 +1,194 @@
+/* static/css/styles.css */
+@import url('https://fonts.cdnfonts.com/css/edo-sz');
+
+/* reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: #fafafa;
+  color: #212121;
+}
+
+a {
+  font-family: 'Edo SZ', sans-serif;
+}
+
+/* material*/
+.elevation-2 {
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-left {
+  flex-shrink: 0;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: #0077cc;
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.5rem;
+}
+
+.search-bar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #555;
+}
+
+.profile-button,
+.filter-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* mobile stuff */
+@media (max-width: 768px) {
+  .search-bar {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+
+  .mobile-only {
+    display: inline;
+  }
+
+  .search-bar input {
+    padding: 0.4rem;
+  }
+}
+
+.home-page {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.filters {
+  flex: 0 0 220px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  height: fit-content;
+}
+
+.feed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.post-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  margin-left: 0.5rem;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-title {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: #ccc;
+}
+.star.filled {
+  color: #FFC107;
+}
+
+.post-description {
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #777;
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+}

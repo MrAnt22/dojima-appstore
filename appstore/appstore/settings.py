@@ -16,7 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-+ee=-_%@f8dvn-5vlst7w)=i*_eh9-_9d=4c)o-ez#53v%#!5h
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -117,7 +115,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR  / 'static',  # <-- tells Django where to look
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
