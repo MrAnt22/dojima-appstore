@@ -19,6 +19,7 @@
       <span class="material-symbols-rounded">tune</span>
     </button>
 
+
     <form action="{% url 'search' %}" method="get" class="search-bar">
       <input type="text" name="q" placeholder="Search apps..." required>
       <button type="submit">
@@ -29,6 +30,11 @@
     <a href="{% url 'profile' %}" class="profile-button">
       <span class="material-symbols-rounded">account_circle</span>
     </a>
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="{% url 'create_post' %}" class="create-post-button">
+      <span class="material-symbols-rounded">add</span> Post
+    </a>
+{% endif %}
   </header>
 
   <!-- 🔄 Page content -->
