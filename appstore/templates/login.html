@@ -1,16 +1,26 @@
 {% extends 'base.html' %}
-
-{% block title %}Увійти{% endblock %}
-
 {% block content %}
-<h2>🔐 Вхід до акаунту</h2>
+<div class="login-container">
+  <div class="login-card elevation-2">
+    <h2 class="login-title">Sign in to Dojima</h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="post">
+      {% csrf_token %}
 
-    <button type="submit">Увійти</button>
-</form>
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required>
+      </div>
 
-<p>Немає акаунту? <a href="{% url 'register' %}">Зареєструватися</a></p>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+      </div>
+
+      <button type="submit" class="btn-primary">Log In</button>
+    </form>
+
+    <p class="register-link">Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+  </div>
+</div>
 {% endblock %}
