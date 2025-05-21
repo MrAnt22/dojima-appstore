@@ -2,6 +2,6 @@ pyvenv.cfg
 **/__pycache__/ 
 **__init__*
 venv/
-Lib/
-Scripts/
+Lib
+Scripts
 .vscode
