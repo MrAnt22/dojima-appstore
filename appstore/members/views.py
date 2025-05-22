@@ -38,7 +38,7 @@ def home(request):
 
     # return render(request, 'home.html', {'posts': posts})
     posts = Post.objects.all().order_by('-created_at')  # Show newest first
-    return render(request, 'home.html', {'posts': posts})
+    return render(request, 'home.html', {'posts': posts, 'show_navbar': True})
 
 
 def search(request):
@@ -52,15 +52,15 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'show_navbar': False})
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html')
+    return render(request, 'profile.html', {'show_navbar': True})
 
 @login_required
 def settings_view(request):
-    return render(request, 'settings.html')
+    return render(request, 'settings.html', {'show_navbar': True})
 
 @login_required
 @user_passes_test(is_admin)
@@ -74,4 +74,4 @@ def create_post(request):
             return redirect('home')
     else:
         form = PostForm()
-    return render(request, 'create-post.html', {'form': form})
+    return render(request, 'create-post.html', {'form': form, 'show_navbar': True})

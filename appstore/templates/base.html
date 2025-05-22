@@ -10,6 +10,7 @@
 </head>
 <body>
   <!-- 🌐 Navbar -->
+   {% if show_navbar %}
   <header class="navbar elevation-2">
     <div class="navbar-left">
         <a href="{% url 'home' %}" class="logo"><img width="32px" height="32px" src="{% static 'img/store.png' %}"> Dojima Appstore</a>
@@ -34,8 +35,9 @@
     <a href="{% url 'create_post' %}" class="create-post-button">
       <span class="material-symbols-rounded">add</span> Post
     </a>
-{% endif %}
+  {% endif %}
   </header>
+  {% endif %}
 
   <!-- 🔄 Page content -->
   <main class="main-content">
