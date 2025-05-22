@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('settings/', views.settings_view, name='settings'),
     path('create-post/', views.create_post, name='create_post'),
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
 ]

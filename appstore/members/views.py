@@ -1,15 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import PostForm
-from .models import Post
+from .forms import PostForm, ReviewForm
+from .models import Post, Review
+
 
 def is_admin(user):
     return user.is_staff
 
 def home(request):
     # # Dummy post data
-    # posts = [{
+    # posts = [{    
     #     "title": "SuperCoolApp",
     #     "description": "This is a very useful app that automates stuff and saves your time. Great for all users.",
     #     "rating": 4,
@@ -39,7 +40,6 @@ def home(request):
     # return render(request, 'home.html', {'posts': posts})
     posts = Post.objects.all().order_by('-created_at')  # Show newest first
     return render(request, 'home.html', {'posts': posts})
-
 
 def search(request):
     return render(request, 'search.html')
@@ -75,3 +75,22 @@ def create_post(request):
     else:
         form = PostForm()
     return render(request, 'create-post.html', {'form': form})
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    reviews = post.reviews.all()
+    form = ReviewForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        review = form.save(commit=False)
+        review.post = post
+        review.author = request.user
+        review.save()
+        post.update_rating()
+        return redirect('post_detail', pk=post.pk)
+
+    return render(request, 'post_detail.html', {
+        'post': post,
+        'reviews': reviews,
+        'form': form,
+    })
