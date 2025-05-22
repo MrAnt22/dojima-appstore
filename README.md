@@ -16,10 +16,10 @@ And activate it:
 
 ```bash
 #  on Windows
-myenv\Scripts\activate
+venv\Scripts\activate
 
 # on macOS and Linux
-source myenv/bin/activate
+source venv/bin/activate
 ```
 
 Then, install all needed dependencies by running:
@@ -27,6 +27,8 @@ Then, install all needed dependencies by running:
 ```bash
 pip install -r requirements.txt
 ```
+
+Don't forget to set up a MySQL DB server.
 
 You're done!
 

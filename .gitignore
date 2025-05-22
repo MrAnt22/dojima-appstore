@@ -5,3 +5,4 @@ venv/
 Lib
 Scripts
 .vscode
+appstore/db.sqlite3
