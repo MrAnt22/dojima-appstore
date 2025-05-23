@@ -1,96 +1,124 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_developer = models.BooleanField(default=False)
+User = get_user_model()
 
-class Post(models.Model):
-    CATEGORY_CHOICES = [
-        ('tools', 'Tools'),
-        ('guides', 'Guides'),
-        ('announcements', 'Announcements'),
-    ]
 
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    views = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)
-    comments = models.IntegerField(default=0)
-    rating = models.FloatField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+class TimestampedModel(models.Model):
+    """Abstract base class that adds created/updated timestamps to models."""
 
-    file = models.FileField(upload_to='uploads/', null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
-    def update_rating(self):
-        reviews = self.reviews.all()
-        if reviews.exists():
-            self.rating = round(sum(r.rating for r in reviews) / reviews.count(), 1)
-        else:
-            self.rating = 0
-        self.save()
+    class Meta:
+        abstract = True
+        ordering = ("-created",)
+
+
+class Profile(TimestampedModel):
+    """Extends the default Django user with extra profile information."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
     def __str__(self):
-        return self.title
-    
-class Review(models.Model):
-    post = models.ForeignKey(Post, related_name='reviews', on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])
-    comment = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+        return f"Profile({self.user.username})"
 
-    def __str__(self):
-        return self.title
 
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    """Simple tagged category for grouping posts/apps."""
+
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=60, unique=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "categories"
+        ordering = ("name",)
 
     def __str__(self):
         return self.name
 
-class Post(models.Model):
-    POST_TYPES = [
-        ('app', 'App'),
-        ('forum', 'Forum'),
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class Post(TimestampedModel):
+    """Represents either a generic post/article or an application listing."""
+
+    POST = "post"
+    APP = "app"
+    TYPE_CHOICES = [
+        (POST, "Post"),
+        (APP, "Application"),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+    title = models.CharField(max_length=120)
     description = models.TextField()
-    type = models.CharField(max_length=10, choices=POST_TYPES)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=POST)
+
+    categories = models.ManyToManyField(Category, blank=True, related_name="posts")
     views = models.PositiveIntegerField(default=0)
-    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    categories = models.ManyToManyField(Category, related_name='posts', blank=True)
+    likes = models.ManyToManyField(User, blank=True, related_name="liked_posts")
+
+    slug = models.SlugField(max_length=140, unique=True, blank=True)
+
+    class Meta(TimestampedModel.Meta):
+        pass
 
     def __str__(self):
-        return f"[{self.type}] {self.title}"
+        return self.title
+
+    # Convenience helpers --------------------------------------------------
+    @property
+    def average_rating(self):
+        """Average of related review ratings, cached at runtime."""
+        agg = self.reviews.aggregate(avg=models.Avg("rating"))
+        return (agg["avg"] or 0)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
 
 class AppFile(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='files')
-    file = models.FileField(upload_to='apps/')
+    """Binary files associated with an application‑type Post."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="files")
+    file = models.FileField(upload_to="app_files/")
 
     def __str__(self):
         return self.file.name
 
-class AppReview(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField()
+
+class Review(TimestampedModel):
+    """User review with rating and text attached to an application post."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.PositiveSmallIntegerField(choices=[(i, i) for i in range(1, 6)])
     content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta(TimestampedModel.Meta):
+        unique_together = ("post", "user")
 
     def __str__(self):
-        return f"Review by {self.user.username} - {self.rating}/5"
+        return f"{self.user} › {self.post} ({self.rating}★)"
 
-class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Comment(TimestampedModel):
+    """Comment on a post, used when the post is not an application."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta(TimestampedModel.Meta):
+        ordering = ("created",)
 
     def __str__(self):
-        return f"Comment by {self.user.username}"
+        return f"Comment({self.user} on {self.post})"

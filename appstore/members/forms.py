@@ -1,24 +1,42 @@
 from django import forms
-from .models import Post
-from .models import Review
+from .models import Post, Review, Comment, AppFile, Category
+
 
 class PostForm(forms.ModelForm):
-    CATEGORY_CHOICES = [
-        ('tools', 'App'),
-        ('guides', 'Guide (Forum)'),
-        ('announcements', 'Announcement (Forum)'),
-    ]
-
-    category = forms.ChoiceField(choices=CATEGORY_CHOICES, label='Post Type')
-
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'file']
-        
+        fields = ['title', 'description', 'type', 'categories']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'categories': forms.CheckboxSelectMultiple(),
+        }
+
+
+class AppFileForm(forms.ModelForm):
+    class Meta:
+        model = AppFile
+        fields = ['file']
+
+
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['rating', 'comment']
+        fields = ['rating', 'content']
         widgets = {
-            'rating': forms.RadioSelect(choices=[(i, f'{i} ☆') for i in range(1, 6)]),
+            'content': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Write your comment...'}),
+        }
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
