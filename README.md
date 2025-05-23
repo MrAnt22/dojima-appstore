@@ -28,6 +28,8 @@ Then, install all needed dependencies by running:
 pip install -r requirements.txt
 ```
 
+Don't forget to set up a MySQL DB server.
+
 You're done!
 
 Run the app with:

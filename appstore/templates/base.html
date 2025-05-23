@@ -11,6 +11,7 @@
 </head>
 <body>
   <!-- 🌐 Navbar -->
+   {% if show_navbar %}
   <header class="navbar elevation-2">
     <div class="navbar-left">
         <a class="dojima" href="{% url 'home' %}" class="logo"><img width="32px" height="32px" src="{% static 'img/store.png' %}"> Dojima Appstore</a>
@@ -21,12 +22,17 @@
     </button>
 
     <form action="{% url 'home' %}" method="get" class="search-bar">
-      <input type="text" name="q" placeholder="Search apps..." value="{{ request.GET.search|default:'' }}" required>
+      <input type="text" name="q" placeholder="Search apps..." required>
       <button type="submit">
         <span class="material-symbols-rounded">search</span>
       </button>
     </form>
 
+    {% if user.is_authenticated and user.is_staff %}
+      <a href="{% url 'create_post' %}" class="create-post-button">
+        <span class="material-symbols-rounded">add</span> Post
+      </a>
+    {% endif %}
     {% if user.is_authenticated %}
       <a href="{% url 'profile' username=user.username %}" class="profile-button">
         <span class="material-symbols-rounded">account_circle</span>
@@ -37,6 +43,7 @@
       </a>
     {% endif %}
   </header>
+  {% endif %}
 
   <!-- 🔄 Page content -->
   <main class="main-content">

@@ -1,3 +1,8 @@
 pyvenv.cfg
 **/__pycache__/ 
+**__init__*
 venv/
+Lib
+Scripts
+.vscode
+appstore/db.sqlite3
