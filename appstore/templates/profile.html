@@ -1,15 +1,149 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Мій профіль{% endblock %}
-
+{% load static %}
 {% block content %}
-<h2>👤 Мій профіль</h2>
 
-<ul>
-    <li><strong>Ім'я користувача:</strong> {{ user.username }}</li>
-    <li><strong>Email:</strong> {{ user.email }}</li>
-    <li><strong>Дата приєднання:</strong> {{ user.date_joined|date:"d.m.Y" }}</li>
-</ul>
+<style>
+</style>
 
-<a href="{% url 'settings' %}">⚙️ Змінити налаштування</a>
+<div class="profile-container">
+  <!-- User info -->
+  <div class="user-info">
+    <img src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}" alt="{{ profile_user.username }}'s avatar" class="avatar">
+    <h2 class="user-username">{{ profile_user.username }}</h2>
+    <p class="date-joined">Joined: {{ profile_user.date_joined}}</p>
+  </div>
+
+  <!-- Logout button-->
+  <form method="post" action="{% url 'logout' %}" class="logout-form">
+    {% csrf_token %}
+    <a href="{% url 'settings' %}" class="settings-button">
+    <span class="material-symbols-rounded">settings</span> Profile Settings
+  </a>
+    <button type="submit" class="btn btn-logout">
+      <span class="material-symbols-rounded">logout</span> Logout
+    </button>
+  </form>
+
+  <br>
+
+  <!-- Collapsible Posts -->
+  <button class="collapsible">
+    Posts
+    <span class="toggle-icon material-symbols-rounded">expand_more</span>
+  </button>
+  <div class="content">
+    {% if posts %}
+    {% for post in posts %}
+    <div class="post-wrapper">
+      <!-- info of the admin who posted -->
+      <div class="admin-info">
+        <img src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}" alt="Avatar" class="avatar">
+        <span class="admin-name">{{ post.user.username }}</span>
+      </div>
+
+      <!-- card (of the post)-->
+      <div class="post-card elevation-2">
+        <div class="post-header">
+          <h2 class="post-title">{{ post.title }}</h2>
+          <div class="post-controls">
+            <div class="rating">
+              {% for i in "12345"|make_list %}
+                {% if forloop.counter <= post.rating %}
+                  <span class="star filled">★</span>
+                {% else %}
+                  <span class="star">☆</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <a href="{% url 'post' post.pid %}" class="open-icon">
+              <span class="material-symbols-rounded">open_in_new</span>
+            </a>
+          </div>
+        </div>
+
+        <p class="post-description">
+          {{ post.description|truncatewords:40 }}
+        </p>
+
+        <div class="post-footer">
+          <div class="post-stats">
+            👁️ {{ post.views }} &nbsp;
+            ❤️ {{ post.likes }} &nbsp;
+            💬 {{ post.comments }}
+          </div>
+          <div class="post-time">
+            🕒 {{ post.timestamp }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+      <p>No posts yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Collapsible Reviews -->
+  <button class="collapsible">
+    Reviews
+    <span class="toggle-icon material-symbols-rounded">expand_more</span>
+  </button>
+  <div class="content">
+    {% if reviews %}
+      {% for review in reviews %}
+            <!-- card (of the post)-->
+            <div class="post-card elevation-2">
+              <div class="post-header">
+                <h2 class="post-title">{{ review.post.title }}</h2>
+                <a href="{% url 'post' review.post.pid %}"class="open-icon">
+                  <span class="material-symbols-rounded">open_in_new</span>
+                </a>
+              </div>
+              <div class="review-card">
+                <strong>{{ profile_user.username }}</strong>: {{ review.comment }}
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}
+                  <span class="star filled">★</span>
+                  {% else %}
+                  <span class="star">☆</span>
+                  {% endif %}
+              {% endfor %}
+              </div>
+            </div>
+      {% endfor %}
+    {% else %}
+      <p>No reviews yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Collapsible Ratings -->
+  <button class="collapsible">
+    Comments
+    <span class="toggle-icon material-symbols-rounded">expand_more</span>
+  </button>
+  <div class="content">
+    {% if comments %}
+      {% for comment in comments %}
+      <!-- card (of the post)-->
+        <div class="post-card elevation-2">
+          <div class="post-header">
+            <h2 class="post-title">{{ comment.post.title }} </h2>
+            <a href="{% url 'post' comment.post.pid %}?commentid={{ comment.cid }}" class="open-icon">
+              <span class="material-symbols-rounded">open_in_new</span>
+            </a>
+          </div>
+            <div class="comment-card">
+              <strong>{{ profile_user.username }}</strong>: {{ comment.text }}
+            </div>
+          </div>
+      {% endfor %}
+    {% else %}
+      <p>No comments yet.</p>
+    {% endif %}
+  </div>
+
+
+<script src="{% static 'js/profile.js' %}"></script>
+
 {% endblock %}

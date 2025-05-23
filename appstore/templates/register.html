@@ -1,16 +1,28 @@
-{% extends 'base.html' %}
-
-{% block title %}Реєстрація{% endblock %}
-
+{% extends "base.html" %}
+{% load static  %}
 {% block content %}
-<h2>📝 Реєстрація нового користувача</h2>
-
-<form method="post">
+<div class="registration-form">
+  <h2>Register</h2>
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <label>Username</label>
+    <input type="text" name="username" required>
 
-    <button type="submit">Зареєструватися</button>
-</form>
+    <label>Email</label>
+    <input type="email" name="email" required>
 
-<p>Вже маєш акаунт? <a href="{% url 'login' %}">Увійти</a></p>
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <label for="id_avatar">Avatar Image</label>
+    <input type="file" name="avatar" id="id_avatar" accept="image/*">
+
+    <div class="avatar-preview">
+        <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
+    </div>
+
+    <button type="submit">Sign Up</button>
+  </form>
+  <script src="{% static 'js/avatar_preview.js' %}">  </script>
+</div>
 {% endblock %}

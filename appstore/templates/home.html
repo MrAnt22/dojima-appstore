@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Home - App Store{% endblock %}
 
+{% load static %}
 {% block content %}
 <div class="home-page">
   <!-- sidebar of filtersr -->
   <aside class="filters">
-    <h3>Filters</h3>
+    <h3><span class="material-symbols-rounded">filter_alt</span>Filters</h3>
     <form method="get">
       <!-- filters -->
       <label>
@@ -55,12 +56,12 @@
 
         <div class="post-footer">
           <div class="post-stats">
-            👁️ {{ post.views }} &nbsp;
-            ❤️ {{ post.likes }} &nbsp;
-            💬 {{ post.comments }}
+            <span class="material-symbols-rounded">visibility</span> {{ post.views }} &nbsp;
+            <span class="material-symbols-rounded">favorite</span> {{ post.likes }} &nbsp;
+            <span class="material-symbols-rounded">comment</span> {{ post.comments }}
           </div>
           <div class="post-time">
-            🕒 {{ post.timestamp }}
+            <span class="material-symbols-rounded">calendar_today</span> {{ post.timestamp }}
           </div>
         </div>
       </div>
