@@ -19,5 +19,6 @@ urlpatterns = [
     path('profile/<str:username>/', views.profile, name='profile'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('settings/', views.settings_view, name='settings'),
+    path('create-post/', views.create_post, name='create_post'),
     path('post/<str:post_type>/<int:post_id>/', views.post, name='post')
 ]

@@ -39,14 +39,13 @@
       <div class="post-card elevation-2">
         <div class="post-header">
           <h2 class="post-title">{{ post.title }}</h2>
-            <div class="rating">
-            {% for i in "12345"|make_list %}
-                {% if forloop.counter <= post.rating %}
-                <span class="star filled">★</span>
-                {% else %}
-                <span class="star">☆</span>
-                {% endif %}
-            {% endfor %}
+          <a href="{% if post.category == 'tools' %}{% url 'post_app_detail' post.pk %}
+          {% else %}{% url 'post_forum_detail' post.pk %}{% endif %}"
+          class="read-more-btn">+ more
+          </a>
+            <div class="card">
+              <p>⭐ {{ post.rating }}</p>
+              <a href="{% url 'post_detail' post.pk %}">Read more →</a>
             </div>
         </div>
 
