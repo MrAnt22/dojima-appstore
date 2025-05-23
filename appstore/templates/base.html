@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>{% block title %}App Store{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/store.png' %}">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -13,29 +14,34 @@
    {% if show_navbar %}
   <header class="navbar elevation-2">
     <div class="navbar-left">
-        <a href="{% url 'home' %}" class="logo"><img width="32px" height="32px" src="{% static 'img/store.png' %}"> Dojima Appstore</a>
+        <a class="dojima" href="{% url 'home' %}" class="logo"><img width="32px" height="32px" src="{% static 'img/store.png' %}"> Dojima Appstore</a>
     </div>
     
     <button class="filter-button mobile-only" title="Filters">
       <span class="material-symbols-rounded">tune</span>
     </button>
 
-
-    <form action="{% url 'search' %}" method="get" class="search-bar">
+    <form action="{% url 'home' %}" method="get" class="search-bar">
       <input type="text" name="q" placeholder="Search apps..." required>
       <button type="submit">
         <span class="material-symbols-rounded">search</span>
       </button>
     </form>
 
-    <a href="{% url 'profile' %}" class="profile-button">
-      <span class="material-symbols-rounded">account_circle</span>
-    </a>
     {% if user.is_authenticated and user.is_staff %}
-    <a href="{% url 'create_post' %}" class="create-post-button">
-      <span class="material-symbols-rounded">add</span> Post
-    </a>
-  {% endif %}
+      <a href="{% url 'create_post' %}" class="create-post-button">
+        <span class="material-symbols-rounded">add</span> Post
+      </a>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <a href="{% url 'profile' username=user.username %}" class="profile-button">
+        <span class="material-symbols-rounded">account_circle</span>
+      </a>
+    {% else %}
+      <a href="{% url 'login' %}"  class="profile-button">
+        <span class="material-symbols-rounded">account_circle</span>
+      </a>
+    {% endif %}
   </header>
   {% endif %}
 

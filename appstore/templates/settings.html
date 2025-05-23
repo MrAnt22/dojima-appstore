@@ -1,6 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>⚙️ Налаштування профілю</h2>
-<p>Тут можна змінити налаштування користувача.</p>
+<div class="settings-container elevation-2">
+  <h2>Profile Settings</h2>
+    <div class="user-info">
+        <img src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}" alt="{{ profile_user.username }}'s avatar" class="avatar">
+        <h2 class="user-username">{{ profile_user.username }}</h2>
+    </div>
+
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="username">Change Username:</label>
+    <input type="text" id="username" name="username" value="{{ request.user.username }}" required>
+
+    <label for="avatar">Change Avatar:</label>
+    <input type="file" id="id_avatar" name="avatar" accept="image/*">
+
+    <div class="avatar-preview">
+        <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
+    </div>
+
+    <button type="submit">Save Changes</button>
+  </form>
+  <script src="{% static 'js/avatar_preview.js' %}">  </script>
+</div>
 {% endblock %}
