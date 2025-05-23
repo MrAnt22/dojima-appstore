@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}App Posts{% endblock %}
+
+{% block content %}
+<h2>App Posts</h2>
+
+{% for post in page_obj %}
+  <div class="post-card">
+    <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+    <p>{{ post.content|truncatechars:100 }}</p>
+    <p><small>⭐ {{ post.rating }} — {{ post.created_at|date:"M d, Y" }}</small></p>
+  </div>
+{% empty %}
+  <p>No app posts yet.</p>
+{% endfor %}
+
+<!-- Pagination -->
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">« Prev</a>
+  {% endif %}
+
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next »</a>
+  {% endif %}
+</div>
+{% endblock %}

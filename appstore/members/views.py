@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import PostForm, ReviewForm
 from .models import Post, Review
+from django.core.paginator import Paginator
 
 
 def is_admin(user):
@@ -66,7 +67,7 @@ def settings_view(request):
 @user_passes_test(is_admin)
 def create_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES) 
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -75,3 +76,47 @@ def create_post(request):
     else:
         form = PostForm()
     return render(request, 'create-post.html', {'form': form})
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    reviews = post.reviews.all()
+    form = ReviewForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        review = form.save(commit=False)
+        review.post = post
+        review.author = request.user
+        review.save()
+        post.update_rating()
+        return redirect('post_detail', pk=post.pk)
+
+    return render(request, 'post_detail.html', {
+        'post': post,
+        'reviews': reviews,
+        'form': form,
+    })
+
+def app_posts(request):
+    posts = Post.objects.filter(category='tools').order_by('-created_at')
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'post_app.html', {'page_obj': page_obj})
+
+
+def forum_posts(request):
+    posts = Post.objects.exclude(category='tools').order_by('-created_at')
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'post_forum.html', {'page_obj': page_obj})
+
+def post_app_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk, category='tools')
+    return render(request, 'post_detail.html', {'post': post})
+
+def post_forum_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if post.category not in ['guides', 'announcements']:
+        return redirect('home')
+    return render(request, 'post_detail.html', {'post': post})

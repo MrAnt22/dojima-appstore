@@ -2,9 +2,34 @@
 
 {% block content %}
 <h2>Create a New Post</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Publish</button>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.title.label_tag }} {{ form.title }}
+  {{ form.content.label_tag }} {{ form.content }}
+  
+  {{ form.category.label_tag }} {{ form.category }}
+
+  <div id="file-upload" style="display:none;">
+    {{ form.file.label_tag }} {{ form.file }}
+  </div>
+
+  <button type="submit">Submit</button>
 </form>
+
+<script>
+  const categoryField = document.getElementById("id_category");
+  const fileUpload = document.getElementById("file-upload");
+
+  function toggleFileUpload() {
+    if (categoryField.value === "tools") {
+      fileUpload.style.display = "block";
+    } else {
+      fileUpload.style.display = "none";
+    }
+  }
+
+  categoryField.addEventListener("change", toggleFileUpload);
+  document.addEventListener("DOMContentLoaded", toggleFileUpload);
+</script>
+
 {% endblock %}

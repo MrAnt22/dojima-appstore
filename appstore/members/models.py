@@ -25,6 +25,8 @@ class Post(models.Model):
     rating = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    file = models.FileField(upload_to='uploads/', null=True, blank=True)
+
     def update_rating(self):
         reviews = self.reviews.all()
         if reviews.exists():
