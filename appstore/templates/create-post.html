@@ -1,35 +1,43 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<h2>Create a New Post</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.title.label_tag }} {{ form.title }}
-  {{ form.content.label_tag }} {{ form.content }}
-  
-  {{ form.category.label_tag }} {{ form.category }}
+<div class="create-post-container">
+  <h2 class="page-title">Create a New Post</h2>
 
-  <div id="file-upload" style="display:none;">
-    {{ form.file.label_tag }} {{ form.file }}
-  </div>
+  <form method="POST" enctype="multipart/form-data" class="create-post-form">
+    {% csrf_token %}
 
-  <button type="submit">Submit</button>
-</form>
+    <div class="form-group">
+      <label for="id_title" class="form-label">Title</label>
+      <input type="text" name="title" id="id_title" class="form-input" required maxlength="120" />
+    </div>
 
-<script>
-  const categoryField = document.getElementById("id_category");
-  const fileUpload = document.getElementById("file-upload");
+    <div class="form-group">
+      <label for="id_description" class="form-label">Description</label>
+      <textarea name="description" id="id_description" class="form-textarea" rows="6" required></textarea>
+    </div>
 
-  function toggleFileUpload() {
-    if (categoryField.value === "tools") {
-      fileUpload.style.display = "block";
-    } else {
-      fileUpload.style.display = "none";
-    }
-  }
+    <div class="form-group">
+      <label for="id_type" class="form-label">Type</label>
+      <select name="type" id="id_type" class="form-select" required>
+        <option value="post">Post</option>
+        <option value="app">Application</option>
+      </select>
+    </div>
 
-  categoryField.addEventListener("change", toggleFileUpload);
-  document.addEventListener("DOMContentLoaded", toggleFileUpload);
-</script>
+    <div class="form-group">
+      <label class="form-label">Categories</label>
+      <div class="checkbox-group">
+        {% for category in categories %}
+          <label class="checkbox-label">
+            <input type="checkbox" name="categories" value="{{ category.id }}" />
+            {{ category.name }}
+          </label>
+        {% endfor %}
+      </div>
+    </div>
 
+    <button type="submit" class="btn-primary">Create Post</button>
+  </form>
+</div>
 {% endblock %}

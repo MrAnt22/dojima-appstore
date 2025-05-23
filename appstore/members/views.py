@@ -25,6 +25,8 @@ def register(request):
         if form.is_valid():
             form.save()
             return redirect('login')
+        else:
+            print(form.errors)
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form, 'show_navbar': False})
@@ -41,6 +43,7 @@ def profile(request, username):
         'posts': posts,
         'reviews': reviews,
         'comments': comments,
+        'show_navbar': True
     })
 
 @login_required
@@ -52,8 +55,7 @@ def settings_view(request):
         'profile': {'avatar_url': '/static/img/default-avatar.png'}
     }
 
-    return render(request, 'settings.html', {'profile_user': profile_user})
-
+    return render(request, 'settings.html', {'profile_user': profile_user, 'show_navbar': True})
 
 def post(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, type=post_type)
@@ -62,26 +64,27 @@ def post(request, post_type, post_id):
         files = AppFile.objects.filter(post=post)
         reviews = Review.objects.filter(post=post)
         avg_rating = reviews.aggregate(avg=Avg('rating'))['avg'] or 0
-        context = {'post': post, 'files': files, 'reviews': reviews, 'avg_rating': avg_rating}
+        context = {'post': post, 'files': files, 'reviews': reviews, 'avg_rating': avg_rating, 'show_navbar': True}
     else:
         comments = Comment.objects.filter(post=post)
-        context = {'post': post, 'comments': comments}
+        context = {'post': post, 'comments': comments, 'show_navbar': True}
 
     return render(request, 'post.html', context)
 
 @login_required
 @user_passes_test(is_admin)
 def create_post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES) 
+    if request.method == "POST":
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            post.user = request.user
             post.save()
+            form.save_m2m()
             return redirect('home')
     else:
         form = PostForm()
-    return render(request, 'create-post.html', {'form': form})
+    return render(request, "create-post.html", {"form": form, 'show_navbar': True})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -100,6 +103,7 @@ def post_detail(request, pk):
         'post': post,
         'reviews': reviews,
         'form': form,
+        'show_navbar': True
     })
 
 def app_posts(request):

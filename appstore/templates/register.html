@@ -1,21 +1,48 @@
 {% extends "base.html" %}
-{% load static  %}
+{% load static %}
 {% block content %}
 <div class="registration-form">
   <h2>Register</h2>
+
+  {# Non-field errors (like password mismatch) #}
+  {% if form.non_field_errors %}
+  <div class="error-message non-field-errors">
+    {{ form.non_field_errors }}
+  </div>
+  {% endif %}
+
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+
     <label>Username</label>
-    <input type="text" name="username" required>
+    <input type="text" name="username" value="{{ form.username.value|default_if_none:'' }}" required>
+    {% if form.username.errors %}
+      <div class="error-message">{{ form.username.errors|striptags }}</div>
+    {% endif %}
 
     <label>Email</label>
-    <input type="email" name="email" required>
+    <input type="email" name="email" value="{{ form.email.value|default_if_none:'' }}" required>
+    {% if form.email.errors %}
+      <div class="error-message">{{ form.email.errors|striptags }}</div>
+    {% endif %}
 
     <label>Password</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password1" id="password1" required>
+    {% if form.password1.errors %}
+      <div class="error-message">{{ form.password1.errors|striptags }}</div>
+    {% endif %}
+
+    <label>Repeat your password</label>
+    <input type="password" name="password2" id="password2" required>
+    {% if form.password2.errors %}
+      <div class="error-message">{{ form.password2.errors|striptags }}</div>
+    {% endif %}
 
     <label for="id_avatar">Avatar Image</label>
     <input type="file" name="avatar" id="id_avatar" accept="image/*">
+    {% if form.avatar.errors %}
+      <div class="error-message">{{ form.avatar.errors|striptags }}</div>
+    {% endif %}
 
     <div class="avatar-preview">
         <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
@@ -23,6 +50,7 @@
 
     <button type="submit">Sign Up</button>
   </form>
-  <script src="{% static 'js/avatar_preview.js' %}">  </script>
+
+  <script src="{% static 'js/avatar_preview.js' %}"></script>
 </div>
 {% endblock %}
