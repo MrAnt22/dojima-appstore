@@ -4,23 +4,27 @@
 {% block content %}
 <div class="settings-container elevation-2">
   <h2>Profile Settings</h2>
-    <div class="user-info">
-        <img src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}" alt="{{ profile_user.username }}'s avatar" class="avatar">
-        <h2 class="user-username">{{ profile_user.username }}</h2>
-    </div>
-
+  <div class="user-info">
+    <img
+      src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}"
+      alt="{{ profile_user.username }}'s avatar" class="avatar">
+    <h2 class="user-username">{{ profile_user.username }}</h2>
+  </div>
 
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <label for="username">Change Username:</label>
-    <input type="text" id="username" name="username" value="{{ request.user.username }}" required>
-
+    <div class="form-group">
+      <label for="username">Change Username:</label>
+      <input type="text" id="username" name="username"
+            value="{{ request.user.username }}" class="form-input" required>
+    </div>
+    
     <label for="avatar">Change Avatar:</label>
     <input type="file" id="id_avatar" name="avatar" accept="image/*">
 
     <div class="avatar-preview">
-        <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
+      <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
     </div>
 
     <button type="submit">Save Changes</button>
