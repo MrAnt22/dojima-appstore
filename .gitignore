@@ -9,3 +9,7 @@ Scripts
 appstore/db.sqlite3
 .env
 media/files/*
+appstore/media/files/*
+*.session
+tgdump
+dumpfiles

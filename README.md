@@ -37,3 +37,18 @@ Run the app with:
 ```bash
 python appstore/manage.py runserver
 ```
+
+## Debugging
+
+Entering the MySQL shell:
+
+```bash
+mysql -u root -p
+```
+
+Reset the DB:
+
+```bash
+DROP DATABASE appstore;
+CREATE DATABASE appstore;
+```

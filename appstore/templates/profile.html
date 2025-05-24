@@ -41,8 +41,8 @@
       <!-- info of the admin who posted -->
       <div class="admin-info">
         <img
-          src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}"
-          alt="Avatar" class="avatar">
+          src="{% if post.admin.avatar %}{{ post.admin.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+          alt="Avatar" class="comment-avatar" />
         <span class="admin-name">{{ post.user.username }}</span>
       </div>
 
@@ -72,12 +72,17 @@
 
         <div class="post-footer">
           <div class="post-stats">
-            👁️ {{ post.views }} &nbsp;
-            ❤️ {{ post.likes }} &nbsp;
-            💬 {{ post.comments }}
+              <span class="material-symbols-rounded">visibility</span> {{ post.views }}
+              <span class="material-symbols-rounded">favorite</span> {{ post.likes.count }}
+              {% if post.type == 'post' %}
+                <span class="material-symbols-rounded">comment</span> {{ post.comments.count }}
+              {% else %}
+                <span class="material-symbols-rounded">rate_review</span> {{ post.reviews.count }}
+              {% endif %}
           </div>
           <div class="post-time">
-            🕒 {{ post.timestamp }}
+              <span class="material-symbols-rounded">calendar_today</span>
+              {{ post.created|date:"M d, Y" }}
           </div>
         </div>
       </div>
@@ -105,7 +110,7 @@
         </a>
       </div>
       <div class="review-card">
-        <strong>{{ profile_user.username }}</strong>: {{ review.comment }}
+        <strong>{{ profile_user.username }}</strong>:
         {% for i in "12345"|make_list %}
         {% if forloop.counter <= review.rating %}
         <span class="star filled">★</span>
@@ -113,6 +118,9 @@
         <span class="star">☆</span>
         {% endif %}
         {% endfor %}
+        <br>
+        <br>
+        {{ review.content }}
       </div>
     </div>
     {% endfor %}
@@ -138,7 +146,7 @@
         </a>
       </div>
       <div class="comment-card">
-        <strong>{{ profile_user.username }}</strong>: {{ comment.text }}
+        <strong>{{ profile_user.username }}</strong>: {{ comment.content }}
       </div>
     </div>
     {% endfor %}

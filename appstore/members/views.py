@@ -13,7 +13,8 @@ def is_admin(user):
 
 def home(request):
     posts = Post.objects.all().order_by('-created')
-    return render(request, 'home.html', {'posts': posts, 'show_navbar': True})
+    categories = Category.objects.all().order_by('name')
+    return render(request, 'home.html', {'posts': posts, 'categories': categories, 'show_navbar': True})
 
 def search(request):
     return render(request, 'search.html')

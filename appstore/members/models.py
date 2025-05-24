@@ -5,6 +5,14 @@ from django.urls import reverse
 
 User = get_user_model()
 
+def generate_unique_slug(instance, base_slug):
+    slug = base_slug
+    num = 1
+    while instance.__class__.objects.filter(slug=slug).exists():
+        slug = f"{base_slug}-{num}"
+        num += 1
+    return slug
+
 class TimestampedModel(models.Model):
     """Abstract base class that adds created/updated timestamps to models."""
 
@@ -81,7 +89,9 @@ class Post(TimestampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            self.slug = generate_unique_slug(self, base_slug)
+        print(self.slug)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
