@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from .forms import PostForm, ReviewForm
 from .models import Category, Post, Review, Comment, AppFile
 
@@ -12,12 +12,21 @@ def is_admin(user):
     return user.is_staff
 
 def home(request):
-    posts = Post.objects.all().order_by('-created')
     categories = Category.objects.all().order_by('name')
-    return render(request, 'home.html', {'posts': posts, 'categories': categories, 'show_navbar': True})
+    query = request.GET.get('q', '')
+    if query:
+         posts = Post.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        ).order_by('-created')
+    else:
+        posts = Post.objects.all().order_by('-created')
 
-def search(request):
-    return render(request, 'search.html')
+    return render(request, 'home.html', {
+        'posts': posts,
+        'show_navbar': True,
+        'query': query,
+        'categories': categories,
+    })
 
 def register(request):
     if request.method == 'POST':

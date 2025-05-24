@@ -89,6 +89,11 @@ results = asyncio.run(main(chat_name=chat_input, limit=10))
 msg_list = [msg.to_dict() for msg in results["messages"]]
 
 out_path = os.path.join(config("TELEGRAM_DIR"), f"{chat_input}.json")
+# with open("output.json", "w", encoding="utf-8") as f:
+#     json.dump(msg_list, f, default=str, ensure_ascii=False, indent=2)
+
+# with open("output.json", "r", encoding="utf-8") as f:
+#     raw_data = json.load(f)
 with open(out_path, "w") as f:
         json.dump(msg_list, f, default=str, ensure_ascii=False, indent=2)
 

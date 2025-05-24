@@ -14,7 +14,6 @@ def my_profile_redirect(request):
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('search/', views.search, name='search'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', views.register, name='register'),
     path('profile/', my_profile_redirect, name='my_profile_redirect'),
