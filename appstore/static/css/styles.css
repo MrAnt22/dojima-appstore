@@ -112,6 +112,7 @@ body {
   }
 }
 
+.admin-panel-button,
 .create-post-button {
   display: inline-flex;
   align-items: center;
@@ -126,6 +127,7 @@ body {
   margin-right: 20px;
 }
 
+.admin-panel-button:hover,
 .create-post-button:hover {
   background-color: #0056b3;
 }
@@ -514,7 +516,7 @@ body {
   border-radius: 1rem;
   padding: 1.5rem;
   max-width: 260px;
-  max-height: 1600px;
+  max-height: 600px;
   overflow-y: auto;
   font-family: "Segoe UI", sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);

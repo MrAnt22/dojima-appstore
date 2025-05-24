@@ -34,6 +34,9 @@
 
       <div class="navbar-right">
         {% if user.is_authenticated and user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="admin-panel-button">
+          <span class="material-symbols-rounded">admin_panel_settings</span> Admin Panel
+        </a>
         <a href="{% url 'create_post' %}" class="create-post-button">
           <span class="material-symbols-rounded">add</span> Post
         </a>
