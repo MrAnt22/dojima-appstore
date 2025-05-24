@@ -6,8 +6,8 @@
   <h2>Profile Settings</h2>
   <div class="user-info">
     <img
-      src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}"
-      alt="{{ profile_user.username }}'s avatar" class="avatar">
+      src="{{ request.user.profile.avatar_url }}"
+      alt="{{ request.user.username }}'s avatar" class="avatar">
     <h2 class="user-username">{{ profile_user.username }}</h2>
   </div>
 

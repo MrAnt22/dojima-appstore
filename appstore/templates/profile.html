@@ -10,10 +10,10 @@
   <!-- User info -->
   <div class="user-info">
     <img
-      src="{{ profile_user.profile.avatar_url|default:'/static/img/default-avatar.png' }}"
-      alt="{{ profile_user.username }}'s avatar" class="avatar">
-    <h2 class="user-username">{{ profile_user.username }}</h2>
-    <p class="date-joined">Joined: {{ profile_user.date_joined}}</p>
+      src="{{ request.user.profile.avatar_url }}"
+      alt="{{ request.user.username }}'s avatar" class="avatar">
+    <h2 class="user-username">{{ request.user.username }}</h2>
+    <p class="date-joined">Joined: {{ request.user.date_joined}}</p>
   </div>
 
   <!-- Logout button-->

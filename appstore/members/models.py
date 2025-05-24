@@ -30,6 +30,12 @@ class Profile(TimestampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url
+        return '/static/img/default-avatar.png'
+
     def __str__(self):
         return f"Profile({self.user.username})"
 

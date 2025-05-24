@@ -52,6 +52,8 @@ def settings_view(request):
     
     if request.method == 'POST':
         new_username = request.POST.get('username', '').strip()
+        avatar = request.FILES.get('avatar')
+
         if not new_username:
             messages.error(request, "Username cannot be blank.")
         elif User.objects.exclude(pk=request.user.pk).filter(username=new_username).exists():
@@ -60,6 +62,14 @@ def settings_view(request):
             request.user.username = new_username
             request.user.save()
             messages.success(request, "Username updated successfully.")
+
+        if avatar:
+            profile.avatar = avatar
+            profile.save()
+            messages.success(request, "Avatar updated successfully.")
+        else:
+            messages.error(request, "Something went wrong applying the new avatar.")
+
             return redirect('settings')
 
     return render(request, 'settings.html', { 

@@ -8,9 +8,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', config('DJANGO_SETTINGS_MODULE')
 django.setup()
 
 from django.contrib.auth import get_user_model
-from members.models import Post
 from django.utils.text import slugify
-from members.models import Post
+from members.models import Post, AppFile, Category
 
 User = get_user_model()
 
@@ -48,6 +47,9 @@ def run(json_path):
         slug_unique = generate_unique_slug(slug)
         post_type = Post.APP if files else Post.POST
 
+        category_name = 'App' if post_type == Post.APP else 'Post'
+        category = Category.objects.get(name=category_name)
+
         post = Post.objects.create(
             user=user,
             title=title,
@@ -56,6 +58,16 @@ def run(json_path):
             type=post_type,
             slug=slug_unique,
         )
+
+        post.categories.add(category)
+
+        for file_path in files:
+            relative_path = os.path.relpath(file_path, 'appstore/media')
+            AppFile.objects.create(
+                post=post,
+                file=relative_path
+            )
+            print(f"  -> Linked file: {relative_path}")
 
         print(f"Created {post_type} post '{title}' with slug '{slug}'")
 
