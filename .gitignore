@@ -1,5 +1,6 @@
 pyvenv.cfg
 **/__pycache__/ 
+appstore/members/migrations/__pycache__
 **__init__*
 venv/
 Lib
@@ -7,3 +8,4 @@ Scripts
 .vscode
 appstore/db.sqlite3
 .env
+media/files/*

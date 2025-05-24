@@ -15,37 +15,39 @@
     {% csrf_token %}
 
     <label>Username</label>
-    <input type="text" name="username" value="{{ form.username.value|default_if_none:'' }}" required>
+    <input type="text" name="username"
+      value="{{ form.username.value|default_if_none:'' }}" required>
     {% if form.username.errors %}
-      <div class="error-message">{{ form.username.errors|striptags }}</div>
+    <div class="error-message">{{ form.username.errors|striptags }}</div>
     {% endif %}
 
     <label>Email</label>
-    <input type="email" name="email" value="{{ form.email.value|default_if_none:'' }}" required>
+    <input type="email" name="email"
+      value="{{ form.email.value|default_if_none:'' }}" required>
     {% if form.email.errors %}
-      <div class="error-message">{{ form.email.errors|striptags }}</div>
+    <div class="error-message">{{ form.email.errors|striptags }}</div>
     {% endif %}
 
     <label>Password</label>
     <input type="password" name="password1" id="password1" required>
     {% if form.password1.errors %}
-      <div class="error-message">{{ form.password1.errors|striptags }}</div>
+    <div class="error-message">{{ form.password1.errors|striptags }}</div>
     {% endif %}
 
     <label>Repeat your password</label>
     <input type="password" name="password2" id="password2" required>
     {% if form.password2.errors %}
-      <div class="error-message">{{ form.password2.errors|striptags }}</div>
+    <div class="error-message">{{ form.password2.errors|striptags }}</div>
     {% endif %}
 
     <label for="id_avatar">Avatar Image</label>
     <input type="file" name="avatar" id="id_avatar" accept="image/*">
     {% if form.avatar.errors %}
-      <div class="error-message">{{ form.avatar.errors|striptags }}</div>
+    <div class="error-message">{{ form.avatar.errors|striptags }}</div>
     {% endif %}
 
     <div class="avatar-preview">
-        <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
+      <img id="avatarPreviewImg" src="#" alt="Preview" style="display: none;">
     </div>
 
     <button type="submit">Sign Up</button>

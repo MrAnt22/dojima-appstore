@@ -1,71 +1,100 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load myfilters %}
+
 {% block title %}Home - App Store{% endblock %}
 
-{% load static %}
 {% block content %}
 <div class="home-page">
-  <!-- sidebar of filtersr -->
+
+  <!-- 📦 Sidebar Filters -->
   <aside class="filters">
-    <h3><span class="material-symbols-rounded">filter_alt</span>Filters</h3>
+    <h3><span class="material-symbols-rounded">filter_alt</span> Filters</h3>
     <form method="get">
-      <!-- filters -->
-      <label>
-        <input type="checkbox" name="category" value="tools">
-        Tools
-      </label><br>
-      <label>
-        <input type="checkbox" name="category" value="guides">
-        Guides
-      </label><br>
-      <label>
-        <input type="checkbox" name="category" value="announcements">
-        Announcements
-      </label><br>
+      {% for category in categories %}
+        <label>
+          <input type="checkbox" name="category" value="{{ category.id }}">
+          {{ category.name }}
+        </label><br>
+      {% endfor %}
       <button type="submit">Apply</button>
     </form>
   </aside>
 
-  <!-- feed of apps -->
-  <section class="feed">
-    {% for post in posts %}
-    <div class="post-wrapper">
-      <!-- info of the admin who posted -->
-      <div class="admin-info">
-        <img src="{{ post.admin.avatar_url }}" alt="Avatar" class="avatar">
-        <span class="admin-name">{{ post.admin.username }}</span>
+  <!-- 📰 Feed of Posts/Apps -->
+<section class="feed">
+  {% for post in posts %}
+  <div class="post-wrapper">
+
+    <div class="admin-info">
+      <img
+        src="{% if post.admin.avatar %}{{ post.admin.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+        alt="Avatar" class="comment-avatar" />
+      <span class="admin-name">{{ post.user.username }}</span>
+    </div>
+
+    <div class="post-card elevation-2 {{ post.type }}">
+      <div class="post-header">
+        <h2 class="post-title">
+          {{ post.title }}
+          {% if post.type == 'app' %}
+            <span class="material-symbols-rounded badge">apps</span>
+          {% else %}
+            <span class="material-symbols-rounded badge">description</span>
+          {% endif %}
+        </h2>
+
+        <div class="card-links">
+          {% if post.type == 'app' %}
+            <span class="material-symbols-rounded">star</span> {{ post.average_rating|floatformat:1 }}
+          {% endif %}
+          <a href="{% url 'post' post.type post.id %}" class="read-more">Read more →</a>
+        </div>
       </div>
 
-      <!-- card (of the post)-->
-      <div class="post-card elevation-2">
-        <div class="post-header">
-          <h2 class="post-title">{{ post.title }}</h2>
-<!--           <a href="{% if post.category == 'tools' %}{REPLACE WITH SAME SHIT}
-          {% else %}{REPLACE WITH POST REFERRAL}{% endif %}"
-          class="read-more-btn">+ more
-          </a> -->
-            <div class="card">
-              <p>⭐ {{ post.rating }}</p>
-              <a href="REPLACE WITH URL ">Read more →</a>
-            </div>
+      <p class="post-description">{{ post.description|truncatewords:40 }}</p>
+
+      {% if post.type == 'app' %}
+      <br>
+      <div class="post-files">
+        <h4>Files:</h4>
+        <ul>
+          {% for file in post.files.all %}
+            <li class="file-item">
+              <span
+                class="material-symbols-rounded file-icon">insert_drive_file</span>
+              <a href="{{ file.file.url }}" download>{{ file.file.name|basename }}</a>
+              <small>({{ file.file.size|filesizeformat }})</small>
+            </li>
+          {% empty %}
+            <li>No files attached.</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="material-symbols-rounded">visibility</span> {{ post.views }}
+          <span class="material-symbols-rounded">favorite</span> {{ post.likes.count }}
+
+          {% if post.type == 'post' %}
+            <span class="material-symbols-rounded">comment</span> {{ post.comments.count }}
+          {% else %}
+            <span class="material-symbols-rounded">rate_review</span> {{ post.reviews.count }}
+          {% endif %}
         </div>
-
-        <p class="post-description">
-          {{ post.description|truncatewords:40 }}
-        </p>
-
-        <div class="post-footer">
-          <div class="post-stats">
-            <span class="material-symbols-rounded">visibility</span> {{ post.views }} &nbsp;
-            <span class="material-symbols-rounded">favorite</span> {{ post.likes }} &nbsp;
-            <span class="material-symbols-rounded">comment</span> {{ post.comments }}
-          </div>
-          <div class="post-time">
-            <span class="material-symbols-rounded">calendar_today</span> {{ post.timestamp }}
-          </div>
+        <div class="post-time">
+          <span class="material-symbols-rounded">calendar_today</span>
+          {{ post.created|date:"M d, Y" }}
         </div>
       </div>
     </div>
-    {% endfor %}
-  </section>
+  </div>
+  {% empty %}
+    <p>No posts found.</p>
+  {% endfor %}
+</section>
+
 </div>
 {% endblock %}

@@ -1,6 +1,8 @@
 /* static/css/styles.css */
 @import url('https://fonts.cdnfonts.com/css/edo-sz');
 
+/* --- base.html --- */
+
 /* reset */
 * {
   box-sizing: border-box;
@@ -14,13 +16,8 @@ body {
   color: #212121;
 }
 
-.dojima a {
-  font-family: 'Edo SZ', sans-serif;
-}
-
-/* material*/
 .elevation-2 {
-  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .navbar {
@@ -35,9 +32,23 @@ body {
   z-index: 1000;
 }
 
-.navbar-left {
-  flex-shrink: 0;
+.navbar-left a.dojima {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  font-family: 'Edo SZ', sans-serif;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
+
+.navbar-left a.dojima:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
 
 .logo {
   font-weight: bold;
@@ -101,58 +112,109 @@ body {
   }
 }
 
+.create-post-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  margin-right: 20px;
+}
+
+.create-post-button:hover {
+  background-color: #0056b3;
+}
+
+.flash-messages {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+.flash-message {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeOut 0.5s ease-in-out forwards;
+  animation-delay: 2s;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.flash-message.success {
+  background-color: #2ecc71;
+}
+
+.flash-message.error {
+  background-color: #e74c3c;
+}
+
+.flash-message.warning {
+  background-color: #f39c12;
+}
+
+.flash-message.info {
+  background-color: #3498db;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(0%) translateY(100px);
+  }
+}
+
+/* --- home.html --- */
+
 .home-page {
   display: flex;
   gap: 2rem;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .filters {
-  flex: 0 0 220px;
-  background: #ffffff;
-  border-radius: 8px;
+  flex: 0 0 200px;
+  background: #fafafa;
   padding: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  height: fit-content;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .feed {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-}
-
-.post-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.admin-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-  margin-left: 0.5rem;
-}
-
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
+  gap: 1.5rem;
 }
 
 .post-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  position: relative;
+  background: white;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+}
+
+.post-card.app {
+  border-left: 6px solid #4caf50;
+}
+
+.post-card.post {
+  border-left: 6px solid #2196f3;
 }
 
 .post-header {
@@ -161,37 +223,68 @@ body {
   align-items: center;
 }
 
-.post-title {
-  font-size: 1.2rem;
-  margin: 0;
-}
-
-.rating {
+.card-links {
   display: flex;
-  gap: 2px;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #777;
 }
 
-.star {
-  font-size: 1.2rem;
-  color: #ccc;
-}
-.star.filled {
-  color: #FFC107;
+.read-more {
+  color: #0066cc;
+  text-decoration: none;
 }
 
-.post-description {
-  color: #333;
-  font-size: 0.95rem;
+.read-more:hover {
+  text-decoration: underline;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 .post-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1rem;
   font-size: 0.85rem;
-  color: #777;
-  border-top: 1px solid #eee;
-  padding-top: 0.5rem;
+  color: #666;
 }
+
+.material-symbols-rounded.badge {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.post-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.post-stats span.material-symbols-rounded {
+  font-size: 1.3rem;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+.post-card.app {
+  border-left: 6px solid #5c6ac4;
+}
+
+.post-card.post {
+  border-left: 6px solid #3a3f58;
+}
+
+/* --- profile.html --- */
 
 .profile-container {
   max-width: 900px;
@@ -201,7 +294,6 @@ body {
   color: #333;
 }
 
-/* User info: avatar + username + join date */
 .user-info {
   display: flex;
   align-items: center;
@@ -214,7 +306,7 @@ body {
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #1976d2; /* Material blue */
+  border: 3px solid #1976d2;
 }
 
 .user-info h2 {
@@ -230,7 +322,6 @@ body {
   color: #666;
 }
 
-/* Section titles (posts, reviews, ratings) */
 .posts h3,
 .reviews h3,
 .ratings h3 {
@@ -242,13 +333,12 @@ body {
   color: #1976d2;
 }
 
-/* Post cards */
 .post-card {
   background: #f5f5f5;
   border-radius: 8px;
   padding: 15px 20px;
   margin-bottom: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s ease;
   cursor: default;
 }
@@ -273,7 +363,6 @@ body {
   font-size: 0.85rem;
 }
 
-/* Review cards */
 .review-card {
   background: #fafafa;
   border-left: 4px solid #1976d2;
@@ -283,14 +372,12 @@ body {
   color: #222;
 }
 
-/* Ratings text */
 .ratings p {
   font-size: 1.1rem;
   color: #333;
   margin-top: 10px;
 }
 
-/* Responsive tweaks */
 @media (max-width: 600px) {
   .user-info {
     flex-direction: column;
@@ -347,12 +434,11 @@ body {
   user-select: none;
   transition: background-color 0.3s;
 }
+
 .toggle-btn:hover {
   background-color: #0056b3;
 }
 
-
-/* Collapsible button style */
 .collapsible {
   background-color: #007bff;
   color: white;
@@ -374,53 +460,53 @@ body {
   align-items: center;
 }
 
-/* Hover state */
 .collapsible:hover {
   background-color: #0056b3;
 }
 
-/* Material icon inside the button */
 .toggle-icon {
   font-size: 20px;
   color: white;
   transition: transform 0.3s ease;
 }
 
-/* Optional: rotate icon for active state */
 .collapsible.active .toggle-icon {
   transform: rotate(180deg);
 }
 
+.content {
+  padding: 0 18px;
+  background-color: #f9f9f9;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease;
+  border-radius: 0 0 4px 4px;
+}
 
-  /* Collapsible content */
-  .content {
-    padding: 0 18px;
-    background-color: #f9f9f9;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease;
-    border-radius: 0 0 4px 4px;
-  }
+.content.expanded {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 
-  /* Add padding when expanded */
-  .content.expanded {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
+.post-card,
+.review-card {
+  background: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 
-  /* Optional styling for posts, reviews, ratings */
-  .post-card, .review-card {
-    background: white;
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
+.post-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
 
-  .post-title {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
+.post-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
 .filters {
   background-color: #f9f9fb;
@@ -428,6 +514,8 @@ body {
   border-radius: 1rem;
   padding: 1.5rem;
   max-width: 260px;
+  max-height: 1600px;
+  overflow-y: auto;
   font-family: "Segoe UI", sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
@@ -440,8 +528,7 @@ body {
   padding-bottom: 0.3rem;
 }
 
-/* Clean, aligned checkbox + label combo */
-.filter-option {
+test .filter-option {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -455,7 +542,7 @@ body {
 .filter-option input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #4f46e5; /* Indigo */
+  accent-color: #4f46e5;
   cursor: pointer;
 }
 
@@ -493,7 +580,7 @@ body {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
 }
@@ -632,7 +719,7 @@ body {
 }
 
 .error-message {
-  color: #d93025; /* bright red for errors */
+  color: #d93025;
   font-size: 0.9rem;
   margin: 0.2rem 0 1rem 0;
   font-weight: 600;
@@ -699,7 +786,7 @@ body {
   padding: 24px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .settings-container h2 {
@@ -742,7 +829,7 @@ body {
 .settings-container .user-info {
   display: flex;
   align-items: center;
-  gap: 16px; /* spacing between avatar and username */
+  gap: 16px;
   margin-bottom: 20px;
 }
 
@@ -766,12 +853,14 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.post-main-info, .your-review-container, .post-reviews {
+.post-main-info,
+.your-review-container,
+.post-reviews {
   padding: 1.5rem 2rem;
   margin-bottom: 2rem;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .post-header {
@@ -782,7 +871,7 @@ body {
 }
 
 .post-average-rating {
-  color: #FFC107; /* amber for stars */
+  color: #FFC107;
   font-size: 24px;
 }
 
@@ -797,9 +886,37 @@ body {
   color: #FFC107;
 }
 
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-rating label {
+  font-size: 1.8rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star-rating input[type="radio"]:checked~label {
+  color: #ffc107;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label {
+  color: #ffc107;
+}
+
 .post-meta {
   display: flex;
-  gap: 1.8rem;
+  gap: 1rem;
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 1.3rem;
@@ -906,7 +1023,7 @@ body {
   margin-bottom: 0.4rem;
 }
 
-.review-form select, 
+.review-form select,
 .review-form textarea {
   width: 100%;
   padding: 0.4rem 0.6rem;
@@ -949,12 +1066,12 @@ body {
   background: #f9f9f9;
   padding: 1rem 1.4rem;
   border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
   transition: box-shadow 0.3s ease;
 }
 
 .review:hover {
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
 .review-header {
@@ -1003,7 +1120,7 @@ body {
   background: white;
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   margin-top: 2rem;
 }
 
@@ -1023,12 +1140,12 @@ body {
   background: #f9f9f9;
   padding: 1rem 1.4rem;
   border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
   transition: box-shadow 0.3s ease;
 }
 
 .comment:hover {
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
 .comment-header {
@@ -1061,7 +1178,7 @@ body {
   background: white;
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
 }
 
@@ -1154,7 +1271,7 @@ body {
   background: #fff;
   padding: 2rem 2.4rem;
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 .page-title {
@@ -1258,7 +1375,7 @@ body {
 .error-title {
   font-size: 6rem;
   font-weight: 700;
-  color: #e53935; /* red-ish error color */
+  color: #e53935;
   margin-bottom: 0.5rem;
 }
 
@@ -1267,4 +1384,3 @@ body {
   margin-bottom: 2rem;
   color: #555;
 }
-

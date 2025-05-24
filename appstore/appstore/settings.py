@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/profile/"
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Application definition
 
 INSTALLED_APPS = [

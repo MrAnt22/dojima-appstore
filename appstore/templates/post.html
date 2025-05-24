@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load myfilters %}
 
 {% block content %}
 <div class="post-container">
@@ -9,29 +10,32 @@
     <div class="post-header">
       <h1>{{ post.title }}</h1>
       {% if post.type == 'app' %}
-      <div class="post-average-rating" title="Average rating: {{ average_rating }}">
+      <div class="post-average-rating"
+        title="Average rating: {{ average_rating }}">
         {% for i in "12345" %}
-          {% if forloop.counter <= average_rating %}
-            <span class="material-symbols-rounded star filled">star</span>
-          {% else %}
-            <span class="material-symbols-rounded star">star_border</span>
-          {% endif %}
+        {% if forloop.counter <= average_rating %}
+        <span class="material-symbols-rounded star filled">star</span>
+        {% else %}
+        <span class="material-symbols-rounded star">star_border</span>
+        {% endif %}
         {% endfor %}
       </div>
       {% endif %}
     </div>
 
     <div class="post-meta">
-      <img src="{% if post.admin.avatar %}{{ post.admin.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" alt="Avatar" class="comment-avatar"/>
+      <img
+        src="{% if post.admin.avatar %}{{ post.admin.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+        alt="Avatar" class="comment-avatar" />
       <span class="meta-item"> {{ post.user.username }} </span>
-      <span class="meta-item">
-        <span class="material-symbols-rounded">calendar_today</span> {{ post.timestamp }}
-      </span>
       <span class="meta-item">
         <span class="material-symbols-rounded">visibility</span> {{ post.views }}
       </span>
       <span class="meta-item">
         <span class="material-symbols-rounded">favorite</span> {{ post.likes.count }}
+      </span>
+      <span class="meta-item">
+        <span class="material-symbols-rounded">calendar_today</span> {{post.created }}
       </span>
     </div>
 
@@ -40,7 +44,7 @@
     {% if post.categories.exists %}
     <div class="post-categories">
       {% for category in post.categories.all %}
-        <span class="category">{{ category.name }}</span>
+      <span class="category">{{ category.name }}</span>
       {% endfor %}
     </div>
     {% endif %}
@@ -51,11 +55,12 @@
       <br>
       <ul>
         {% for file in files %}
-          <li class="file-item">
-            <span class="material-symbols-rounded file-icon">insert_drive_file</span>
-            <a href="{{ file.file.url }}" download>{{ file.file.name|slice:"-20:" }}</a>
-            <small>({{ file.file.size|filesizeformat }})</small>
-          </li>
+        <li class="file-item">
+          <span
+            class="material-symbols-rounded file-icon">insert_drive_file</span>
+          <a href="{{ file.file.url }}" download>{{ file.file.name|basename }}</a>
+          <small>({{ file.file.size|filesizeformat }})</small>
+        </li>
         {% endfor %}
       </ul>
     </div>
@@ -63,20 +68,21 @@
   </div> <!-- end post-main-info -->
 
   <!-- YOUR REVIEW tab container -->
-  {% if post.type == 'app' %} 
+  {% if post.type == 'app' %}
   <div class="your-review-container elevation-2">
-    <button id="toggle-review-form" class="toggle-btn">Write your review</button>
+    <button id="toggle-review-form" class="toggle-btn">Write your
+      review</button>
     <div id="review-form" class="review-form hidden">
       {% if request.user.is_authenticated %}
-      <form method="post" action="{% url 'submit_review' post.id %}">
+      <form method="post" action="{% url 'post' post.type post.id %}" >
         {% csrf_token %}
         <label for="rating">Rating:</label>
-        <select id="rating" name="rating" required>
-          {% for i in "12345" %}
-          <option value="{{ i }}">{{ i }}</option>
+        <div class="star-rating">
+          {% for i in "54321" %}
+            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+            <label for="star{{ i }}">★</label>
           {% endfor %}
-        </select>
-
+        </div>
         <label for="content">Review:</label>
         <textarea id="content" name="content" rows="4" required></textarea>
 
@@ -99,62 +105,71 @@
           <strong>{{ review.user.username }}</strong>
           <div class="review-stars">
             {% for i in "12345" %}
-              {% if forloop.counter <= review.rating %}
-                <span class="material-symbols-rounded star filled">star</span>
-              {% else %}
-                <span class="material-symbols-rounded star">star_border</span>
-              {% endif %}
+            {% if forloop.counter <= review.rating %}
+            <span class="material-symbols-rounded star filled">star</span>
+            {% else %}
+            <span class="material-symbols-rounded star">star_border</span>
+            {% endif %}
             {% endfor %}
           </div>
           <small>{{ review.timestamp|date:"M d, Y" }}</small>
         </div>
         <p>{{ review.content }}</p>
         {% if request.user.is_superuser or review.user == request.user %}
-          <form method="post" action="{% url 'delete_review' review.id %}">
-            {% csrf_token %}
-            <button class="delete-btn" type="submit">Delete</button>
-          </form>
+        <form method="post" action="{% url 'delete_review' review.id %}">
+          {% csrf_token %}
+          <button class="delete-btn" type="submit">Delete</button>
+        </form>
         {% endif %}
       </div>
       {% empty %}
-        <p>No reviews yet.</p>
+      <p>No reviews yet.</p>
       {% endfor %}
     </div>
   </div>
   {% else %}
-    <div class="comment-form-container">
-      <form method="post" class="comment-form">
-        {% csrf_token %}
-        <div class="comment-user-info">
-          <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" alt="Avatar" class="comment-avatar"/>
-          <span>{{ user.username }}</span>
+  <div class="comment-form-container">
+    <form method="post" class="comment-form" action="{% url 'post' post.type post.id %}">
+      {% csrf_token %}
+      <div class="comment-user-info">
+        <img
+          src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+          alt="Avatar" class="comment-avatar" />
+        <span>{{ user.username }}</span>
+      </div>
+      <div class="comment-form-input">
+        <textarea name="content" rows="2" placeholder="Write your comment..."
+          required></textarea>
+        <button type="submit">Post</button>
+      </div>
+    </form>
+  </div>
+  <div class="comment-container">
+    <div class="comments-section">
+      <h3>Comments</h3>
+      <div class="comments-list">
+        {% if comments %}
+        {% for comment in comments %}
+        <div class="comment">
+          <div class="comment-header">
+            <strong>{{ comment.user.username }}</strong>
+            <span class="comment-date">{{ comment.timestamp }}</span>
+          </div>
+          <p>{{ comment.content }}</p>
+            {% if request.user.is_superuser or review.user == request.user %}
+            <form method="post" action="{% url 'delete_comment' comment.id %}">
+              {% csrf_token %}
+              <button class="delete-btn" type="submit">Delete</button>
+            </form>
+            {% endif %}
         </div>
-        <div class="comment-form-input">
-          <textarea name="content" rows="2" placeholder="Write your comment..." required></textarea>
-          <button type="submit">Post</button>
-        </div>
-      </form>
-    </div>
-    <div class="comment-container">
-      <div class="comments-section">
-        <h3>Comments</h3>
-        <div class="comments-list">
-          {% if comments %}
-            {% for comment in comments %}
-              <div class="comment">
-                <div class="comment-header">
-                  <strong>{{ comment.user.username }}</strong>
-                  <span class="comment-date">{{ comment.timestamp }}</span>
-                </div>
-                <p>{{ comment.content }}</p>
-              </div>
-            {% endfor %}
-          {% else %}
-            <p>No comments yet.</p>
-          {% endif %}
-        </div>
+        {% endfor %}
+        {% else %}
+        <p>No comments yet.</p>
+        {% endif %}
       </div>
     </div>
+  </div>
   {% endif %}
 </div>
 
