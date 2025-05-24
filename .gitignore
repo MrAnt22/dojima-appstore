@@ -8,8 +8,7 @@ Scripts
 .vscode
 appstore/db.sqlite3
 .env
-media/files/*
-appstore/media/files/*
+appstore/media/*
 *.session
 *.session-journal
 tgdump

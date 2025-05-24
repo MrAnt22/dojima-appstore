@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post, Review, Comment, AppFile, Category, Profile
+from .models import Post, Review, Comment, AppFile, Category, Profile, User
+from django.contrib.auth.forms import UserCreationForm
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -9,6 +10,13 @@ class PostForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4}),
             'categories': forms.CheckboxSelectMultiple(),
         }
+
+class CustomUserCreationForm(UserCreationForm):
+    avatar = forms.ImageField(required=False)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2", "avatar")
 
 class ProfileForm(forms.ModelForm):
     username = forms.CharField(max_length=150)

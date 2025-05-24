@@ -7,6 +7,7 @@ class MembersConfig(AppConfig):
     name = 'members'
     
     def ready(self):
+        from . import signals
         # Avoid running during migrations or management commands
         if 'runserver' not in sys.argv:
             return

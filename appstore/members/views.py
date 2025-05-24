@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.db.models import Avg, Q
-from .forms import PostForm
-from .models import Category, Post, Review, Comment, AppFile
+from .forms import CustomUserCreationForm, PostForm
+from .models import Category, Post, Profile, Review, Comment, AppFile
 
 def is_admin(user):
     return user.is_staff
@@ -42,14 +42,22 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save()  # creates User and saves it
+            avatar = form.cleaned_data.get('avatar')
+
+            if avatar:
+                # Create profile or use the signal, then save avatar
+                user.profile.avatar = avatar
+                user.profile.save()
+
             return redirect('login')
         else:
             print(form.errors)
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
+    
     return render(request, 'register.html', {'form': form, 'show_navbar': False})
 
 def about_us(request):
@@ -72,8 +80,7 @@ def profile(request, username):
 
 @login_required
 def settings_view(request):
-    profile_user = get_object_or_404(User, username=request.user.username)
-    profile, created = Profile.objects.get_or_create(user=profile_user)
+    profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
         new_username = request.POST.get('username', '').strip()
@@ -95,10 +102,12 @@ def settings_view(request):
 
         return redirect('settings')
 
-    return render(request, 'settings.html', { 
-        'profile_user': profile_user,
+    context = {
+        'profile_user': request.user,
         'show_navbar': True,
-    })
+    }
+    return render(request, 'settings.html', context)
+
 
 def post(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, type=post_type)

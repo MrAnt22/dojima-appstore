@@ -25,7 +25,7 @@
 
     <div class="post-meta">
       <img
-        src="{% if post.admin.avatar %}{{ post.admin.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+        src="{% if post.user.profile.avatar_url %}{{ post.user.profile.avatar_url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
         alt="Avatar" class="comment-avatar" />
       <span class="meta-item"> {{ post.user.username }} </span>
       <span class="meta-item">
@@ -157,7 +157,7 @@
       {% csrf_token %}
       <div class="comment-user-info">
         <img
-          src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
+          src="{% if user.profile.avatar %}{{ user.profile.avatar_url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}"
           alt="Avatar" class="comment-avatar" />
         <span>{{ user.username }}</span>
       </div>
