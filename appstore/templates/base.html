@@ -26,7 +26,7 @@
       </button>
 
       <form action="{% url 'home' %}" method="get" class="search-bar">
-        <input type="text" name="q" placeholder="Search apps..." required>
+        <input type="text" name="q" placeholder="Search apps..." value="{{ query }}" required>
         <button type="submit">
           <span class="material-symbols-rounded">search</span>
         </button>

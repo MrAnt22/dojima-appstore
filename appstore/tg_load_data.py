@@ -42,6 +42,9 @@ def run(json_path):
         description = item.get('description', '').strip()
         views = item.get('views', 0)
         files = item.get('files', [])
+        likes = item.get('likes', 0)
+        created = item.get('created', 0)
+        updated = item.get('updated', 0)
 
         slug = latin_underscore_slug(title)
         slug_unique = generate_unique_slug(slug)
@@ -55,6 +58,9 @@ def run(json_path):
             title=title,
             description=description,
             views=views,
+            created=created,
+            updated=updated,
+            telegram_like_count=likes,
             type=post_type,
             slug=slug_unique,
         )

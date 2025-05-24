@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.db.models import Avg, Q
-from .forms import PostForm, ReviewForm
+from .forms import PostForm
 from .models import Category, Post, Review, Comment, AppFile
 
 def is_admin(user):
@@ -14,18 +14,30 @@ def is_admin(user):
 def home(request):
     categories = Category.objects.all().order_by('name')
     query = request.GET.get('q', '')
+    selected_categories = request.GET.getlist('category')
+
+    posts = Post.objects.all()
+
     if query:
-         posts = Post.objects.filter(
+        posts = posts.filter(
             Q(title__icontains=query) | Q(description__icontains=query)
-        ).order_by('-created')
-    else:
-        posts = Post.objects.all().order_by('-created')
+        )
+
+    if selected_categories:
+        posts = posts.filter(categories__id__in=selected_categories)
+
+    posts = posts.order_by('-created')
+
+    paginator = Paginator(posts, 3) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'home.html', {
-        'posts': posts,
+        'page_obj': page_obj,
         'show_navbar': True,
         'query': query,
         'categories': categories,
+        'selected_categories': list(map(int, selected_categories)),
     })
 
 def register(request):
@@ -39,6 +51,9 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form, 'show_navbar': False})
+
+def about_us(request):
+    return render(request, 'about-us.html', {'show_navbar': True})
 
 def profile(request, username):
     profile_user = get_object_or_404(User, username=username)
@@ -57,8 +72,9 @@ def profile(request, username):
 
 @login_required
 def settings_view(request):
-    profile_user = get_object_or_404(User, username=request.user)
-    
+    profile_user = get_object_or_404(User, username=request.user.username)
+    profile, created = Profile.objects.get_or_create(user=profile_user)
+
     if request.method == 'POST':
         new_username = request.POST.get('username', '').strip()
         avatar = request.FILES.get('avatar')
@@ -76,10 +92,8 @@ def settings_view(request):
             profile.avatar = avatar
             profile.save()
             messages.success(request, "Avatar updated successfully.")
-        else:
-            messages.error(request, "Something went wrong applying the new avatar.")
 
-            return redirect('settings')
+        return redirect('settings')
 
     return render(request, 'settings.html', { 
         'profile_user': profile_user,
@@ -88,6 +102,9 @@ def settings_view(request):
 
 def post(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, type=post_type)
+
+    post.views += 1
+    post.save(update_fields=['views'])
 
     if request.method == 'POST' and request.user.is_authenticated:
         if post_type == 'app':
@@ -133,22 +150,43 @@ def post(request, post_type, post_id):
     return render(request, 'post.html', context)
 
 @login_required
-@user_passes_test(is_admin)
 def delete_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     post_url = review.post.get_absolute_url()
-    review.delete()
-    messages.success(request, "Review deleted successfully.")
+
+    if request.user.is_superuser or review.user == request.user:
+        review.delete()
+        messages.success(request, "Review deleted successfully.")
+    else:
+        messages.error(request, "You don't have permission to delete this review.")
+
     return redirect(post_url)
 
 @login_required
-@user_passes_test(is_admin)
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     post_url = comment.post.get_absolute_url()
-    comment.delete()
-    messages.success(request, "Comment deleted successfully.")
+
+    if request.user.is_superuser or comment.user == request.user:
+        comment.delete()
+        messages.success(request, "Comment deleted successfully.")
+    else:
+        messages.error(request, "You don't have permission to delete this comment.")
+
     return redirect(post_url)
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user.is_superuser or post.user == request.user:
+        post.delete()
+        messages.success(request, "Post deleted successfully.")
+    else:
+        messages.error(request, "You don't have permission to delete this post.")
+        return redirect(post.get_absolute_url())
+
+    return redirect('home')
 
 @login_required
 @user_passes_test(is_admin)
@@ -176,3 +214,13 @@ def create_post(request):
         'show_navbar': True
     }
     return render(request, 'create-post.html', context)
+
+
+@login_required
+def toggle_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))

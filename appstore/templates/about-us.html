@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="about-container">
+    <h1 class="dojima" href=""><img width="64px"
+        height="64px" src="{% static 'img/store.png' %}"> Dojima Appstore</h1>
+  <h1>Про Нас</h1>
+  <p>Проєкт Dojima Appstore - це магазин додатків з відкритим вихідним кодом для скриптів, 
+    інструментів та утиліт, якими можна ділитися через Telegram. 
+    Він дозволяє користувачам переглядати, фільтрувати та завантажувати інструменти, 
+    надані спільнотою, в чистому та простому у використанні інтерфейсі.</p>
+
+    <div class="about-links">
+    <a href="https://github.com/https://github.com/MrAnt22/dojima-appstore" target="_blank">
+        <span class="material-symbols-rounded">code</span> GitHub
+    </a>
+    <a href="https://t.me/rryapp" target="_blank">
+        <span class="material-symbols-rounded">send</span> Telegram
+    </a>
+    <br>
+    <a href="https://github.com/redouze" target="_blank">
+        <span class="material-symbols-rounded">person</span> redouze
+    </a>
+    <a href="https://github.com/MrAnt22" target="_blank">
+        <span class="material-symbols-rounded">person</span> MrAnt22
+    </a>
+    </div>
+
+</div>
+{% endblock %}

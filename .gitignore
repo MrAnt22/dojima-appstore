@@ -11,5 +11,6 @@ appstore/db.sqlite3
 media/files/*
 appstore/media/files/*
 *.session
+*.session-journal
 tgdump
 dumpfiles

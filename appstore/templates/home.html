@@ -11,19 +11,26 @@
   <aside class="filters">
     <h3><span class="material-symbols-rounded">filter_alt</span> Filters</h3>
     <form method="get">
+      {% if query %}
+        <input type="hidden" name="q" value="{{ query }}">
+      {% endif %}
+
       {% for category in categories %}
         <label>
-          <input type="checkbox" name="category" value="{{ category.id }}">
+          <input type="checkbox" name="category" value="{{ category.id }}"
+                {% if category.id in selected_categories %}checked{% endif %}>
           {{ category.name }}
         </label><br>
       {% endfor %}
+
       <button type="submit">Apply</button>
     </form>
   </aside>
+  
 
   <!-- 📰 Feed of Posts/Apps -->
 <section class="feed">
-  {% for post in posts %}
+  {% for post in page_obj %}
   <div class="post-wrapper">
 
     <div class="admin-info">
@@ -76,7 +83,7 @@
       <div class="post-footer">
         <div class="post-stats">
           <span class="material-symbols-rounded">visibility</span> {{ post.views }}
-          <span class="material-symbols-rounded">favorite</span> {{ post.likes.count }}
+          <span class="material-symbols-rounded">favorite</span> {{ post.total_likes }}
 
           {% if post.type == 'post' %}
             <span class="material-symbols-rounded">comment</span> {{ post.comments.count }}
@@ -92,9 +99,31 @@
     </div>
   </div>
   {% empty %}
-    <p>No posts found.</p>
+    <div class="no-posts">
+      <span class="material-symbols-rounded no-posts-icon">error</span>
+      <p>No posts found.</p>
+    </div>
   {% endfor %}
+  <div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}">
+      <span class="material-symbols-rounded">arrow_back_ios</span>
+    </a>
+  {% endif %}
+
+  <span>{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% for cat in selected_categories %}&category={{ cat }}{% endfor %}">
+      <span class="material-symbols-rounded">arrow_forward_ios</span>
+    </a>
+  {% endif %}
+</div>
 </section>
+
+<a href="{% url 'about_us' %}" class="about-float" title="About Us">
+  <span class="material-symbols-rounded">info</span>
+</a>
 
 </div>
 {% endblock %}

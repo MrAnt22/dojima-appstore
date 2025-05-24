@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from django.utils import timezone
 from django.urls import reverse
+import os
 
 User = get_user_model()
 
@@ -16,12 +18,18 @@ def generate_unique_slug(instance, base_slug):
 class TimestampedModel(models.Model):
     """Abstract base class that adds created/updated timestamps to models."""
 
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(default=timezone.now)
 
     class Meta:
         abstract = True
         ordering = ("-created",)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = self.created or timezone.now()
+        self.updated = timezone.now()
+        super().save(*args, **kwargs)
 
 
 class Profile(TimestampedModel):
@@ -70,6 +78,7 @@ class Post(TimestampedModel):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+    telegram_like_count = models.PositiveIntegerField(default=0)
     title = models.CharField(max_length=120)
     description = models.TextField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=POST)
@@ -85,6 +94,9 @@ class Post(TimestampedModel):
 
     def __str__(self):
         return self.title
+    
+    def total_likes(self):
+        return self.likes.count() + self.telegram_like_count
 
     # Convenience helpers --------------------------------------------------
     @property
@@ -102,6 +114,22 @@ class Post(TimestampedModel):
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_type': self.type, 'post_id': self.id})
+    
+    def delete(self, *args, **kwargs):
+        
+        if self.files:
+            if hasattr(self.files, 'all'):
+                for file in self.files.all():
+                    file_path = file.file.path
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                    file.delete()
+            else:
+                file_path = self.files.path
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+        
+        super().delete(*args, **kwargs)
 
 class AppFile(models.Model):
     """Binary files associated with an application‑type Post."""
