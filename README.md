@@ -2,7 +2,18 @@
 
 ## About
 
-An App Store project built on Django that focuses on providing
+Dojima Appstore - is an App Store like open source project built on Django that focuses on providing scripts,  tools and utilities that are shared via Telegram.
+It allows users to browse, filter, and download tools, provided by the community in a clean and easy-to-use interface
+
+The Dojima Appstore project is an open source app store f
+
+## Preview
+
+![Home Page](./appstore/static/img/preview-home.png)
+
+![Post Page](./appstore/static/img/preview-post.png)
+
+![Profile Page](./appstore/static/img/preview-profile.png)
 
 ## Building
 
@@ -96,7 +107,7 @@ python appstore/tg_extract.py
 Now, run the script that loads the extracted data into the DB:
 
 ```bash
-
+python appstore/tg_load_data.py tgdump/cleaned.json
 ```
 
 You're done! Launch the server & mess around.

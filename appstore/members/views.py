@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Avg, Q
 from .forms import CustomUserCreationForm, PostForm
 from .models import Category, Post, Profile, Review, Comment, AppFile
+from decouple import config
 
 def is_admin(user):
     return user.is_staff
@@ -61,7 +62,7 @@ def register(request):
     return render(request, 'register.html', {'form': form, 'show_navbar': False})
 
 def about_us(request):
-    return render(request, 'about-us.html', {'show_navbar': True})
+    return render(request, 'about-us.html', {'telegram_url': 'https://t.me/' + config('CHAT_NAME'), 'show_navbar': True})
 
 def profile(request, username):
     profile_user = get_object_or_404(User, username=username)
