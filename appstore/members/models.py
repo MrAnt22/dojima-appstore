@@ -164,7 +164,7 @@ class Comment(TimestampedModel):
     content = models.TextField()
 
     class Meta(TimestampedModel.Meta):
-        ordering = ("created",)
+        ordering = ("-created",)
 
     def __str__(self):
         return f"Comment({self.user} on {self.post})"

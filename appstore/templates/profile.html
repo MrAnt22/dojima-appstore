@@ -30,6 +30,7 @@
   <br>
 
   <!-- Collapsible Posts -->
+{% if request.user.is_superuser %}
   <button class="collapsible">
     Posts
     <span class="toggle-icon material-symbols-rounded">expand_more</span>
@@ -92,6 +93,7 @@
     <p>No posts yet.</p>
     {% endif %}
   </div>
+{% endif %}
 
   <!-- Collapsible Reviews -->
   <button class="collapsible">

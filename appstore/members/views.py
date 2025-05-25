@@ -112,8 +112,11 @@ def settings_view(request):
 def post(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, type=post_type)
 
-    post.views += 1
-    post.save(update_fields=['views'])
+    session_key = f'post/{post.type}/{post.id}'
+    if not request.session.get(session_key, False):
+        post.views += 1
+        post.save()
+        request.session[session_key] = True
 
     if request.method == 'POST' and request.user.is_authenticated:
         if post_type == 'app':
